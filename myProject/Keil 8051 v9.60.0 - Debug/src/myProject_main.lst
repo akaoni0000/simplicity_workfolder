@@ -1,0 +1,131 @@
+C51 COMPILER V9.60.0.0   MYPROJECT_MAIN                                                    08/26/2024 16:40:04 PAGE 1   
+
+
+C51 COMPILER V9.60.0.0, COMPILATION OF MODULE MYPROJECT_MAIN
+OBJECT MODULE PLACED IN .\src\myProject_main.OBJ
+COMPILER INVOKED BY: C:\SiliconLabs\SimplicityStudio\v5\developer\toolchains\keil_8051\9.60\BIN\C51.exe C:\Users\Yoshida
+                    -_Lab\SimplicityStudio\v5_workspace\myProject\src\myProject_main.c OMF2 SMALL DEBUG OBJECTEXTEND ROM(LARGE) WARNINGLEVEL(
+                    -2) FLOATFUZZY(3) OPTIMIZE(8,SPEED) DEFINE(DEBUG=1) INTVECTOR(0X0000) INTPROMOTE INCDIR(C:\Users\Yoshida_Lab\SimplicitySt
+                    -udio\v5_workspace\myProject\inc;C:/SiliconLabs/SimplicityStudio/v5/developer/sdks/8051/v4.3.1//Device/shared/si8051Base;
+                    -C:/SiliconLabs/SimplicityStudio/v5/developer/sdks/8051/v4.3.1//Device/EFM8SB1/inc) PRINT(.\src\myProject_main.lst) COND 
+                    -PAGEWIDTH(120) PAGELENGTH(65) OBJECT(.\src\myProject_main.OBJ)
+
+line level    source
+
+   1          #include <SI_EFM8SB1_Register_Enums.h>
+   2          #include "InitDevice.h"
+   3          #include "EFM8SB1_SMBus_Master_Multibyte.h"
+   4          
+   5          uint8_t SMB_DATA_IN[NUM_BYTES_RD];
+   6          uint8_t SMB_DATA_OUT[NUM_BYTES_WR];
+   7          uint8_t TARGET;
+   8          volatile bool SMB_BUSY;
+   9          volatile bool SMB_RW;
+  10          uint16_t NUM_ERRORS;
+  11          
+  12          SI_SBIT(DISP_EN, SFR_P2, 7);
+  13          #define DISP_BC_DRIVEN 0
+  14          #define DISP_EFM8_DRIVEN 1
+  15          SI_SBIT(SDA, SFR_P1, 1);
+  16          SI_SBIT(SCL, SFR_P1, 3);
+  17          
+  18          void SMB_Write(void);
+  19          void SMB_Read(void);
+  20          void T0_Waitms(uint8_t ms);
+  21          
+  22          void SiLabs_Startup(void) {
+  23   1        // Disable the watchdog here
+  24   1      }
+  25          
+  26          void main(void) {
+  27   1        volatile uint8_t dat;
+  28   1        volatile uint8_t data_count;
+  29   1        uint8_t i;
+  30   1        //enter_DefaultMode_from_RESET();
+  31   1        //DISP_EN = DISP_BC_DRIVEN;
+  32   1      
+  33   1      //  while (!SDA) {
+  34   1      //      XBR1 = 0x40;
+  35   1      //      SCL = 0;
+  36   1      //      for (i = 0; i < 255; i++);
+  37   1      //      SCL = 1;
+  38   1      //      while (!SCL);
+  39   1      //      for (i = 0; i < 10; i++);
+  40   1      //      XBR1 = 0x00;
+  41   1      //  }
+  42   1      
+  43   1        enter_Mode2_from_DefaultMode();
+  44   1        //LED0 = LED_OFF;
+  45   1      
+  46   1      
+  47   1      
+  48   1        //テストコード
+  49   1        dat = 0;
+  50   1        NUM_ERRORS = 0;
+  51   1      
+C51 COMPILER V9.60.0.0   MYPROJECT_MAIN                                                    08/26/2024 16:40:04 PAGE 2   
+
+  52   1        SMB_Write();
+  53   1        while (1) {}
+  54   1      }
+*** WARNING C280 IN LINE 28 OF C:\Users\Yoshida_Lab\SimplicityStudio\v5_workspace\myProject\src\myProject_main.c: 'data_
+             -count': unreferenced local variable
+*** WARNING C280 IN LINE 29 OF C:\Users\Yoshida_Lab\SimplicityStudio\v5_workspace\myProject\src\myProject_main.c: 'i': u
+             -nreferenced local variable
+  55          
+  56          
+  57          
+  58          
+  59          
+  60          
+  61          //サポート関数
+  62          void SMB_Write(void) {
+  63   1          PCA0MD = 0x00;
+  64   1          SMB0CN0_STA = 1;
+  65   1          SMB0ADR = 0xF9;
+  66   1          SMB0DAT = 0xAC;
+  67   1      }
+  68          
+  69          void SMB_Read(void) {
+  70   1          while (SMB_BUSY);
+  71   1          SMB_BUSY = 1;
+  72   1          SMB_RW = 1;
+  73   1          SMB0CN0_STA = 1;
+  74   1          while (SMB_BUSY);
+  75   1      }
+  76          
+  77          void T0_Waitms(uint8_t ms) {
+  78   1          TCON &= ~0x30;
+  79   1          TMOD &= ~0x0f;
+  80   1          TMOD |= 0x01;
+  81   1          CKCON0 |= 0x04;
+  82   1      
+  83   1          while (ms) {
+  84   2              TCON_TR0 = 0;
+  85   2              TH0 = ((-SYSCLK/1000) >> 8);
+  86   2              TL0 = ((-SYSCLK/1000) & 0xFF);
+  87   2              TCON_TF0 = 0;
+  88   2              TCON_TR0 = 1;
+  89   2              while (!TCON_TF0);
+  90   2              ms--;
+  91   2          }
+  92   1          TCON_TR0 = 0;
+  93   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =     77    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =      9       3
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =      2    ----
+   EDATA SIZE       =   ----    ----
+   HDATA SIZE       =   ----    ----
+   XDATA CONST SIZE =   ----    ----
+   FAR CONST SIZE   =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  2 WARNING(S),  0 ERROR(S)

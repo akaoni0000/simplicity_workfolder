@@ -1,0 +1,81 @@
+C51 COMPILER V9.60.0.0   MYPROJECT_3_MAIN                                                  06/29/2024 22:02:34 PAGE 1   
+
+
+C51 COMPILER V9.60.0.0, COMPILATION OF MODULE MYPROJECT_3_MAIN
+OBJECT MODULE PLACED IN .\src\myProject_3_main.OBJ
+COMPILER INVOKED BY: C:\SiliconLabs\SimplicityStudio\v5\developer\toolchains\keil_8051\9.60\BIN\C51.exe C:\Users\Yoshida
+                    -_Lab\SimplicityStudio\v5_workspace\myProject_3\src\myProject_3_main.c OMF2 SMALL DEBUG OBJECTEXTEND ROM(LARGE) WARNINGLE
+                    -VEL(2) FLOATFUZZY(3) OPTIMIZE(8,SPEED) DEFINE(DEBUG=1) INTVECTOR(0X0000) INTPROMOTE INCDIR(C:\Users\Yoshida_Lab\Simplici
+                    -tyStudio\v5_workspace\myProject_3\inc;C:/SiliconLabs/SimplicityStudio/v5/developer/sdks/8051/v4.3.1//Device/shared/si805
+                    -1Base;C:/SiliconLabs/SimplicityStudio/v5/developer/sdks/8051/v4.3.1//Device/EFM8SB1/inc) PRINT(.\src\myProject_3_main.ls
+                    -t) COND PAGEWIDTH(120) PAGELENGTH(65) OBJECT(.\src\myProject_3_main.OBJ)
+
+line level    source
+
+   1          #include <SI_EFM8SB1_Register_Enums.h>
+   2          #include <stdio.h>
+   3          
+   4          
+   5          //------------------------------------------------------------------------------------
+   6          // Global CONSTANTS
+   7          //------------------------------------------------------------------------------------
+   8          //sbit LED = P1^2; // Green LED: '1' = ON; '0' = OFF
+   9          sbit LED = P0^4;
+  10          
+  11          //------------------------------------------------------------------------------------
+  12          // Function PROTOTYPES
+  13          //------------------------------------------------------------------------------------
+  14          void PORT_Init(void);
+  15          
+  16          int i;
+  17          //------------------------------------------------------------------------------------
+  18          // MAIN Routinemki
+  19          //------------------------------------------------------------------------------------
+  20          void main (void) {
+  21   1      
+  22   1        PORT_Init(); // Set up Crossbar and GPIO
+  23   1        PCA0MD &= ~0x60;
+  24   1        XBR2 = 0x40;
+  25   1        while (1) {
+  26   2        // Infinite loop to keep the program running
+  27   2        //LED = 1; // Turn on LED
+  28   2          LED = 0;
+  29   2          for(i=1; i<=15000000; i++){}
+  30   2          LED = 1;
+  31   2          for(i=1; i<=15000000; i++){}
+  32   2          //for(i=1; i<=15; i++){}
+  33   2        }
+  34   1      }
+  35          //------------------------------------------------------------------------------------
+  36          // PORT_Init
+  37          //------------------------------------------------------------------------------------
+  38          //
+  39          // This routine initializes the Crossbar and GPIO pins
+  40          //
+  41          // Pinout:
+  42          // P1.6 - LED (GPIO)
+  43          //
+  44          void PORT_Init(void)
+  45          {
+  46   1      XBR2 = 0x40; // Enable crossbar and weak pull-ups // Enable P1.6 (LED) as a push-pull output
+  47   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =     97    ----
+C51 COMPILER V9.60.0.0   MYPROJECT_3_MAIN                                                  06/29/2024 22:02:34 PAGE 2   
+
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =      2    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+   EDATA SIZE       =   ----    ----
+   HDATA SIZE       =   ----    ----
+   XDATA CONST SIZE =   ----    ----
+   FAR CONST SIZE   =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)
