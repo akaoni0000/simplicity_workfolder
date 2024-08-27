@@ -1,0 +1,157 @@
+C51 COMPILER V9.60.0.0   EFM8SB1_WATCHDOG                                                  06/18/2024 18:34:54 PAGE 1   
+
+
+C51 COMPILER V9.60.0.0, COMPILATION OF MODULE EFM8SB1_WATCHDOG
+OBJECT MODULE PLACED IN .\src\EFM8SB1_Watchdog.OBJ
+COMPILER INVOKED BY: C:\SiliconLabs\SimplicityStudio\v5\developer\toolchains\keil_8051\9.60\BIN\C51.exe C:\Users\Yoshida
+                    -_Lab\SimplicityStudio\v5_workspace\EFM8SB1_Watchdog\src\EFM8SB1_Watchdog.c OMF2 SMALL DEBUG OBJECTEXTEND ROM(LARGE) WARN
+                    -INGLEVEL(2) FLOATFUZZY(3) OPTIMIZE(8,SPEED) DEFINE(DEBUG=1) INTVECTOR(0X0000) INTPROMOTE INCDIR(C:\Users\Yoshida_Lab\Sim
+                    -plicityStudio\v5_workspace\EFM8SB1_Watchdog\inc;C:/SiliconLabs/SimplicityStudio/v5/developer/sdks/8051/v4.3.1//Device/sh
+                    -ared/si8051Base;C:/SiliconLabs/SimplicityStudio/v5/developer/sdks/8051/v4.3.1//Device/EFM8SB1/inc) PRINT(.\src\EFM8SB1_W
+                    -atchdog.lst) COND PAGEWIDTH(120) PAGELENGTH(65) OBJECT(.\src\EFM8SB1_Watchdog.OBJ)
+
+line level    source
+
+   1          //-----------------------------------------------------------------------------
+   2          // SB1_Watchdog.c
+   3          //-----------------------------------------------------------------------------
+   4          // Copyright 2014 Silicon Laboratories, Inc.
+   5          // http://developer.silabs.com/legal/version/v11/Silicon_Labs_Software_License_Agreement.txt
+   6          //
+   7          // Program Description:
+   8          //
+   9          // This program helps the user to learn about operating the Watch Dog Timer.
+  10          // The WDT is used to generate resets if the times between writes to the WDT
+  11          // update register (PCA0CPH5) exceed a specified limit. The WDT can be disabled
+  12          // and enabled in the software as needed. When enabled the PCA Module 2 acts as
+  13          // the WDT. This program resets the MCU when P0.2 switch is pressed. Also upon
+  14          // reset the LED blinks approximately five times faster when compared to before.
+  15          // The reset is caused due to a WDT overflow and can be confirmed by checking
+  16          // the value of the RSTSRC register where bit 3 is set to indicate a reset
+  17          // caused by WDT.
+  18          //
+  19          // How to Test:
+  20          // 1) Place the switch in "AEM" mode.
+  21          // 2) Connect the EFM8SB1 STK board to a PC using a mini USB cable.
+  22          // 3) Compile and download code to the EFM8SB1 STK board.
+  23          //    In Simplicity Studio IDE, select Run -> Debug from the menu bar,
+  24          //    click the Debug button in the quick menu, or press F11.
+  25          // 4) Run the code.
+  26          //    In Simplicity Studio IDE, select Run -> Resume from the menu bar,
+  27          //    click the Resume button in the quick menu, or press F8.
+  28          //        - The test will blink the LED0 at a rate of 10Hz until the switch PB0
+  29          //          (P1.2) is pressed.
+  30          //        - Once the the switch is pressed and held for a long enough time,
+  31          //          it will prevent the WDT from being touched and the WDT will
+  32          //          cause a reset.
+  33          //        - Upon reset the code checks for a WDT reset and blinks the LED five
+  34          //          times faster than before to indicate the same.
+  35          //
+  36          // Target:         EFM8SB1
+  37          // Tool chain:     Simplicity Studio / Keil C51 9.51
+  38          // Command Line:   None
+  39          //
+  40          // Release 1.0 (BL)
+  41          //    - Initial Release
+  42          //    - 9 JAN 2015
+  43          //
+  44          //
+  45          //-----------------------------------------------------------------------------
+  46          // Includes
+  47          //-----------------------------------------------------------------------------
+  48          #include <si_toolchain.h>
+  49          #include <SI_EFM8SB1_Register_Enums.h>                  // SI_SFR declarations
+  50          #include "InitDevice.h"
+  51          
+C51 COMPILER V9.60.0.0   EFM8SB1_WATCHDOG                                                  06/18/2024 18:34:54 PAGE 2   
+
+  52          //-----------------------------------------------------------------------------
+  53          // Pin Definitions
+  54          //-----------------------------------------------------------------------------
+  55          SI_SBIT (DISP_EN, SFR_P2, 7);          // Display Enable
+  56          #define DISP_BC_DRIVEN   0             // 0 = Board Controller drives display
+  57          #define DISP_EFM8_DRIVEN 1             // 1 = EFM8 drives display
+  58          
+  59          SI_SBIT (SW2, SFR_P1, 2);                 // SW2==0 means switch depressed
+  60          
+  61          //-----------------------------------------------------------------------------
+  62          // Global VARIABLES
+  63          //-----------------------------------------------------------------------------
+  64          SI_LOCATED_VARIABLE_NO_INIT (reserved, uint8_t, SI_SEG_XDATA, 0x0000);
+  65          
+  66          //-----------------------------------------------------------------------------
+  67          // main() Routine
+  68          // ----------------------------------------------------------------------------
+  69          int main (void)
+  70          {
+  71   1              if ((RSTSRC & 0x02) == 0x00)        // First check the PORSF bit. if PORSF
+  72   1              {                                   // is set, all other RSTSRC flags are
+  73   2                                                                                 // invalid
+  74   2                // Check if the last reset was due to the Watch Dog Timer
+  75   2                if (RSTSRC == 0x08)
+  76   2                {
+  77   3                       enter_FastBlink_from_RESET();
+  78   3      
+  79   3                       while(1);                       // wait forever
+  80   3                }
+  81   2                else
+  82   2                {
+  83   3                       enter_SlowBlink_from_RESET();
+  84   3                }
+  85   2      
+  86   2              }
+  87   1              // Calculate Watchdog Timer Timeout
+  88   1              // Offset calculated in PCA clocks
+  89   1              // Offset = ( 256 x PCA0CPL5 ) + 256 - PCA0L
+  90   1              //        = ( 256 x 255(0xFF)) + 256 - 0
+  91   1              // Time   = Offset * (12/SYSCLK)
+  92   1              //        = 255 ms ( PCA uses SYSCLK/12 as its clock source)
+  93   1      
+  94   1              enter_SlowBlink_WD_from_SlowBlink();
+  95   1      
+  96   1              //--------------------------------------------------------------------------
+  97   1              // Main Application Loop/Task Scheduler
+  98   1              //--------------------------------------------------------------------------
+  99   1      
+ 100   1              while (1)
+ 101   1              {
+ 102   2                 //----------------------------------------------------------------------
+ 103   2                 // Task #1 - Check Port I/O
+ 104   2                 //----------------------------------------------------------------------
+ 105   2                 while(!SW2);                    // Force the MCU to stay in this task as
+ 106   2                                                                                 // int32_t as SW2 is pressed. This task must
+ 107   2                                                                                 // finish before the watchdog timer
+ 108   2                                                                                 // timeout expires.
+ 109   2      
+ 110   2                 //----------------------------------------------------------------------
+ 111   2                 // Task #2 - Reset Watchdog Timer
+ 112   2                 //----------------------------------------------------------------------
+ 113   2                 PCA0CPH2 = 0x00;                // Write a 'dummy' value to the PCA0CPH2
+ 114   2                                                                                 // register to reset the watchdog timer
+C51 COMPILER V9.60.0.0   EFM8SB1_WATCHDOG                                                  06/18/2024 18:34:54 PAGE 3   
+
+ 115   2                                                                                 // timeout. If a delay longer than the
+ 116   2                                                                                 // watchdog timer delay occurs between
+ 117   2                                                                                 // successive writes to this register,
+ 118   2                                                                                 // the device will be reset by the watch
+ 119   2                                                                                 // dog timer.
+ 120   2              }
+ 121   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =     32    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =   ----    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+   EDATA SIZE       =   ----    ----
+   HDATA SIZE       =   ----    ----
+   XDATA CONST SIZE =   ----    ----
+   FAR CONST SIZE   =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

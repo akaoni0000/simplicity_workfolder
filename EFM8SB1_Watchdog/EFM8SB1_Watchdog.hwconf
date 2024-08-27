@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="ASCII"?>
+<device:XMLDevice name="EFM8SB10F8G-A-QFN24" partId="mcu.8051.efm8.sb1.efm8sb10f8g-a-qfn24" version="2.2.0" xmlns:device="http://www.silabs.com/ss/hwconfig/document/device.ecore" xmlns:xmi="http://www.omg.org/XMI" xmi:version="2.0">
+  <mode name="SlowBlink">
+    <property object="CLOCK_0" propertyId="ABPeripheral.included" value="true"/>
+    <property object="CLOCK_0" propertyId="clock.clockselect.clocksourcedivider" value="SYSCLK / 8"/>
+    <property object="CLOCK_0" propertyId="clock.clockselect.selectclocksource" value="High-Frequency Oscillator"/>
+    <property object="HFOSC_0" propertyId="ABPeripheral.included" value="true"/>
+    <property object="HFOSC_0" propertyId="hfosc.highfrequencyoscillatorcontrol.enablehighfrequencyoscillator" value="Enabled"/>
+    <property object="HFOSC_0" propertyId="hfosc.highfrequencyoscillatorcontrol.highfrequencyoscillatorfrequency" value="24.5 MHz"/>
+    <property object="INTERRUPT_0" propertyId="ABPeripheral.included" value="true"/>
+    <property object="INTERRUPT_0" propertyId="interrupt.interruptenable.enabletimer2interrupt" value="Enabled"/>
+    <property object="P1.1" propertyId="ports.settings.iomode" value="Digital Push-Pull Output"/>
+    <property object="P1.1" propertyId="ports.settings.outputmode" value="Push-pull"/>
+    <property object="PBCFG_0" propertyId="pbcfg.settings.enablecrossbar" value="Enabled"/>
+    <property object="PCA_0" propertyId="ABPeripheral.included" value="true"/>
+    <property object="PCA_0" propertyId="pca.pcacountertimerconfiguration.pcaclockfrequency" value="255.208 kHz"/>
+    <property object="PCA_0" propertyId="pca.pcacountertimerconfiguration.pcaclockfrequencyintegervalue" value="255208.333333"/>
+    <property object="PCA_0" propertyId="pca.pcacountertimerconfiguration.pcaclockperiod" value="3.918 us"/>
+    <property object="PCA_0" propertyId="pca.pcastartrun.pcacountertimerrunstatus" value="Stopped"/>
+    <property object="PCA_0" propertyId="pca.watchdogcontrol.enablewatchdogtimer" value="Disabled"/>
+    <property object="RSTSRC_0" propertyId="ABPeripheral.included" value="true"/>
+    <property object="RSTSRC_0" propertyId="rstsrc.resetsources.missingclockdetectorreset" value="Enabled"/>
+    <property object="RSTSRC_0" propertyId="rstsrc.resetsources.supplymonitorreset" value="Enabled"/>
+    <property object="SlowBlink" propertyId="mode.diagramLocation" value="100, 100"/>
+    <property object="TIMER16_2" propertyId="ABPeripheral.included" value="true"/>
+    <property object="TIMER16_2" propertyId="timer16.control.runcontrol" value="Start"/>
+    <property object="TIMER16_2" propertyId="timer16.control.timerrunningstate" value="Timer is Running"/>
+    <property object="TIMER16_2" propertyId="timer16.highbyte.highbyte" value="255"/>
+    <property object="TIMER16_2" propertyId="timer16.initandreloadvalue.targetoverflowfrequency" value="5"/>
+    <property object="TIMER16_2" propertyId="timer16.initandreloadvalue.timerinitvalue" value="65535"/>
+    <property object="TIMER16_2" propertyId="timer16.initandreloadvalue.timerreloadvalue" value="14494"/>
+    <property object="TIMER16_2" propertyId="timer16.lowbyte.lowbyte" value="255"/>
+    <property object="TIMER16_2" propertyId="timer16.reloadhighbyte.reloadhighbyte" value="56"/>
+    <property object="TIMER16_2" propertyId="timer16.reloadlowbyte.reloadlowbyte" value="158"/>
+    <property object="TIMER_SETUP_0" propertyId="ABPeripheral.included" value="true"/>
+    <property object="VREG_0" propertyId="ABPeripheral.included" value="true"/>
+    <property object="VREG_0" propertyId="vreg.voltageregulatorcontrol.highfrequencyoscillatorbias" value="Enabled"/>
+  </mode>
+  <mode name="FastBlink">
+    <property object="CLOCK_0" propertyId="ABPeripheral.included" value="true"/>
+    <property object="CLOCK_0" propertyId="clock.clockselect.clocksourcedivider" value="SYSCLK / 8"/>
+    <property object="CLOCK_0" propertyId="clock.clockselect.selectclocksource" value="High-Frequency Oscillator"/>
+    <property object="FastBlink" propertyId="mode.diagramLocation" value="241, 48"/>
+    <property object="HFOSC_0" propertyId="ABPeripheral.included" value="true"/>
+    <property object="HFOSC_0" propertyId="hfosc.highfrequencyoscillatorcontrol.enablehighfrequencyoscillator" value="Enabled"/>
+    <property object="HFOSC_0" propertyId="hfosc.highfrequencyoscillatorcontrol.highfrequencyoscillatorfrequency" value="24.5 MHz"/>
+    <property object="INTERRUPT_0" propertyId="ABPeripheral.included" value="true"/>
+    <property object="INTERRUPT_0" propertyId="interrupt.interruptenable.enableallinterrupts" value="Enabled"/>
+    <property object="INTERRUPT_0" propertyId="interrupt.interruptenable.enabletimer2interrupt" value="Enabled"/>
+    <property object="P1.1" propertyId="ports.settings.iomode" value="Digital Push-Pull Output"/>
+    <property object="P1.1" propertyId="ports.settings.outputmode" value="Push-pull"/>
+    <property object="PBCFG_0" propertyId="pbcfg.settings.enablecrossbar" value="Enabled"/>
+    <property object="PCA_0" propertyId="ABPeripheral.included" value="true"/>
+    <property object="PCA_0" propertyId="pca.pcacountertimerconfiguration.pcaclockfrequency" value="255.208 kHz"/>
+    <property object="PCA_0" propertyId="pca.pcacountertimerconfiguration.pcaclockfrequencyintegervalue" value="255208.333333"/>
+    <property object="PCA_0" propertyId="pca.pcacountertimerconfiguration.pcaclockperiod" value="3.918 us"/>
+    <property object="PCA_0" propertyId="pca.pcastartrun.pcacountertimerrunstatus" value="Stopped"/>
+    <property object="PCA_0" propertyId="pca.watchdogcontrol.enablewatchdogtimer" value="Disabled"/>
+    <property object="RSTSRC_0" propertyId="ABPeripheral.included" value="true"/>
+    <property object="RSTSRC_0" propertyId="rstsrc.resetsources.missingclockdetectorreset" value="Enabled"/>
+    <property object="RSTSRC_0" propertyId="rstsrc.resetsources.supplymonitorreset" value="Enabled"/>
+    <property object="TIMER16_2" propertyId="ABPeripheral.included" value="true"/>
+    <property object="TIMER16_2" propertyId="timer16.control.runcontrol" value="Start"/>
+    <property object="TIMER16_2" propertyId="timer16.control.timerrunningstate" value="Timer is Running"/>
+    <property object="TIMER16_2" propertyId="timer16.highbyte.highbyte" value="255"/>
+    <property object="TIMER16_2" propertyId="timer16.initandreloadvalue.targetoverflowfrequency" value="20"/>
+    <property object="TIMER16_2" propertyId="timer16.initandreloadvalue.timerinitvalue" value="65535"/>
+    <property object="TIMER16_2" propertyId="timer16.initandreloadvalue.timerreloadvalue" value="52776"/>
+    <property object="TIMER16_2" propertyId="timer16.lowbyte.lowbyte" value="255"/>
+    <property object="TIMER16_2" propertyId="timer16.reloadhighbyte.reloadhighbyte" value="206"/>
+    <property object="TIMER16_2" propertyId="timer16.reloadlowbyte.reloadlowbyte" value="40"/>
+    <property object="TIMER_SETUP_0" propertyId="ABPeripheral.included" value="true"/>
+    <property object="VREG_0" propertyId="ABPeripheral.included" value="true"/>
+    <property object="VREG_0" propertyId="vreg.voltageregulatorcontrol.highfrequencyoscillatorbias" value="Enabled"/>
+  </mode>
+  <mode name="SlowBlink_WD">
+    <property object="CLOCK_0" propertyId="ABPeripheral.included" value="true"/>
+    <property object="CLOCK_0" propertyId="clock.clockselect.clocksourcedivider" value="SYSCLK / 8"/>
+    <property object="CLOCK_0" propertyId="clock.clockselect.selectclocksource" value="High-Frequency Oscillator"/>
+    <property object="HFOSC_0" propertyId="ABPeripheral.included" value="true"/>
+    <property object="HFOSC_0" propertyId="hfosc.highfrequencyoscillatorcontrol.enablehighfrequencyoscillator" value="Enabled"/>
+    <property object="HFOSC_0" propertyId="hfosc.highfrequencyoscillatorcontrol.highfrequencyoscillatorfrequency" value="24.5 MHz"/>
+    <property object="INTERRUPT_0" propertyId="ABPeripheral.included" value="true"/>
+    <property object="INTERRUPT_0" propertyId="interrupt.interruptenable.enableallinterrupts" value="Enabled"/>
+    <property object="INTERRUPT_0" propertyId="interrupt.interruptenable.enabletimer2interrupt" value="Enabled"/>
+    <property object="P1.1" propertyId="ports.settings.iomode" value="Digital Push-Pull Output"/>
+    <property object="P1.1" propertyId="ports.settings.outputmode" value="Push-pull"/>
+    <property object="P1.5" propertyId="ports.settings.iomode" value="Digital Push-Pull Output"/>
+    <property object="P1.5" propertyId="ports.settings.outputmode" value="Push-pull"/>
+    <property object="PBCFG_0" propertyId="pbcfg.settings.enablecrossbar" value="Enabled"/>
+    <property object="PCACH_2" propertyId="ABPeripheral.included" value="true"/>
+    <property object="PCACH_2" propertyId="pcach.pcachannel.capturecomparelowbyte" value="255"/>
+    <property object="PCACH_2" propertyId="pcach.pcachannel.capturecompareregister" value="255"/>
+    <property object="PCACH_2" propertyId="pcach.pcachannel.matchfunction" value="Enabled"/>
+    <property object="PCACH_2" propertyId="pcach.pcachannelcapturecomparemode.enablechannelcomparatorfunction" value="Enabled"/>
+    <property object="PCACH_2" propertyId="pcach.pcacontrol.channelcapturecomparemode" value="Software Timer"/>
+    <property object="PCA_0" propertyId="ABPeripheral.included" value="true"/>
+    <property object="PCA_0" propertyId="pca.pcacontrol.channel2capturecomparemode" value="Software Timer"/>
+    <property object="PCA_0" propertyId="pca.pcacountertimerconfiguration.pcaclockfrequency" value="255.208 kHz"/>
+    <property object="PCA_0" propertyId="pca.pcacountertimerconfiguration.pcaclockfrequencyintegervalue" value="255208.333333"/>
+    <property object="PCA_0" propertyId="pca.pcacountertimerconfiguration.pcaclockperiod" value="3.918 us"/>
+    <property object="PCA_0" propertyId="pca.watchdogtimer.expectedtimeoutintervalms" value="257"/>
+    <property object="RSTSRC_0" propertyId="ABPeripheral.included" value="true"/>
+    <property object="RSTSRC_0" propertyId="rstsrc.resetsources.missingclockdetectorreset" value="Enabled"/>
+    <property object="RSTSRC_0" propertyId="rstsrc.resetsources.supplymonitorreset" value="Enabled"/>
+    <property object="SlowBlink_WD" propertyId="mode.diagramLocation" value="293, 139"/>
+    <property object="TIMER16_2" propertyId="ABPeripheral.included" value="true"/>
+    <property object="TIMER16_2" propertyId="timer16.control.runcontrol" value="Start"/>
+    <property object="TIMER16_2" propertyId="timer16.control.timerrunningstate" value="Timer is Running"/>
+    <property object="TIMER16_2" propertyId="timer16.highbyte.highbyte" value="255"/>
+    <property object="TIMER16_2" propertyId="timer16.initandreloadvalue.targetoverflowfrequency" value="5"/>
+    <property object="TIMER16_2" propertyId="timer16.initandreloadvalue.timerinitvalue" value="65535"/>
+    <property object="TIMER16_2" propertyId="timer16.initandreloadvalue.timerreloadvalue" value="14494"/>
+    <property object="TIMER16_2" propertyId="timer16.lowbyte.lowbyte" value="255"/>
+    <property object="TIMER16_2" propertyId="timer16.reloadhighbyte.reloadhighbyte" value="56"/>
+    <property object="TIMER16_2" propertyId="timer16.reloadlowbyte.reloadlowbyte" value="158"/>
+    <property object="TIMER_SETUP_0" propertyId="ABPeripheral.included" value="true"/>
+    <property object="VREG_0" propertyId="ABPeripheral.included" value="true"/>
+    <property object="VREG_0" propertyId="vreg.voltageregulatorcontrol.highfrequencyoscillatorbias" value="Enabled"/>
+  </mode>
+  <modeTransition>
+    <property object="RESET &#8594; SlowBlink" propertyId="modeTransition.target" value="SlowBlink"/>
+    <property object="RESET &#8594; SlowBlink" propertyId="modeTransition.source" value="RESET"/>
+  </modeTransition>
+  <modeTransition>
+    <property object="RESET &#8594; FastBlink" propertyId="modeTransition.target" value="FastBlink"/>
+    <property object="RESET &#8594; FastBlink" propertyId="modeTransition.source" value="RESET"/>
+  </modeTransition>
+  <modeTransition>
+    <property object="SlowBlink &#8594; SlowBlink_WD" propertyId="modeTransition.target" value="SlowBlink_WD"/>
+    <property object="SlowBlink &#8594; SlowBlink_WD" propertyId="modeTransition.source" value="SlowBlink"/>
+  </modeTransition>
+</device:XMLDevice>
