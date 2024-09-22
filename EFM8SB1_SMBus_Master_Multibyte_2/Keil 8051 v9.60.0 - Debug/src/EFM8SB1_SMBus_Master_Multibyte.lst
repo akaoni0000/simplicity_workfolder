@@ -1,4 +1,4 @@
-C51 COMPILER V9.60.0.0   EFM8SB1_SMBUS_MASTER_MULTIBYTE                                    09/14/2024 21:53:43 PAGE 1   
+C51 COMPILER V9.60.0.0   EFM8SB1_SMBUS_MASTER_MULTIBYTE                                    09/22/2024 17:02:52 PAGE 1   
 
 
 C51 COMPILER V9.60.0.0, COMPILATION OF MODULE EFM8SB1_SMBUS_MASTER_MULTIBYTE
@@ -19,276 +19,122 @@ line level    source
    4          
    5          uint8_t SMB_DATA_IN[NUM_BYTES_RD];
    6          uint8_t SMB_DATA_OUT[NUM_BYTES_WR];
-   7          uint8_t TARGET;                             // Target SMBus slave address
-   8          volatile bool SMB_BUSY;
-   9          volatile bool SMB_RW;                                                             // direction of the curr
-             -ent transfer
-  10          uint16_t NUM_ERRORS;                        // Counter for the number of errors.
-  11          SI_LOCATED_VARIABLE_NO_INIT (reserved, uint8_t, SI_SEG_XDATA, 0x0000);
-  12          //-----------------------------------------------------------------------------
-  13          // Pin Definitions
-  14          //-----------------------------------------------------------------------------
-  15          SI_SBIT (DISP_EN, SFR_P2, 7);          // Display Enable
-  16          #define DISP_BC_DRIVEN   0             // 0 = Board Controller drives display
-  17          #define DISP_EFM8_DRIVEN 1             // 1 = EFM8 drives display
-  18          SI_SBIT (SDA, SFR_P1, 2);                 // SMBus on P1.2
-  19          SI_SBIT (SCL, SFR_P1, 3);                 // and P1.3
-  20          //-----------------------------------------------------------------------------
-  21          // Function PROTOTYPES
-  22          //-----------------------------------------------------------------------------
-  23          void SMB_LCD_Init (void);
-  24          void SMB_LCD_Data (void);
-  25          void SMB_Read (void);
-  26          void T0_Waitms (uint8_t ms);
-  27          int bbb;
-  28          int start_flag;
-  29          int data_count;
-  30          int LCD_RS;
-  31          //-----------------------------------------------------------------------------
-  32          // SiLabs_Startup() Routine
-  33          // ----------------------------------------------------------------------------
-  34          // This function is called immediately after reset, before the initialization
-  35          // code is run in SILABS_STARTUP.A51 (which runs before main() ). This is a
-  36          // useful place to disable the watchdog timer, which is enable by default
-  37          // and may trigger before main() in some instances.
-  38          //-----------------------------------------------------------------------------
-  39          void SiLabs_Startup (void)
-  40          {
-  41   1        // Disable the watchdog here
-  42   1      }
-  43           
-  44          //-----------------------------------------------------------------------------
-  45          // main() Routine
-  46          // ----------------------------------------------------------------------------
-  47          int main (void)
-  48          {
-  49   1              volatile uint8_t dat;         // Test counter
-C51 COMPILER V9.60.0.0   EFM8SB1_SMBUS_MASTER_MULTIBYTE                                    09/14/2024 21:53:43 PAGE 2   
+   7          
+   8          void SMB_LCD_Init (void);
+   9          void SMB_LCD_Data (void);
+  10          void T0_Waitms (uint8_t ms);
+  11          
+  12          int LCD_RS;
+  13          void SiLabs_Startup (void) {}
+  14          int main (void)
+  15          {
+  16   1              enter_DefaultMode_from_RESET();
+  17   1              enter_Mode2_from_DefaultMode();
+  18   1      
+  19   1              SMB_LCD_Init();
+  20   1              SMB_LCD_Data();
+  21   1              while(1);
+  22   1      }
+  23          
+  24          void SMB_LCD_Init (void)
+  25          {
+  26   1      
+  27   1        LCD_RS = 0;
+  28   1        SMB_DATA_OUT[0] = 0x38;//0011 1000 38
+  29   1        SMB0CN0_STA = 1;
+  30   1        T0_Waitms (100);
+  31   1      
+  32   1        SMB_DATA_OUT[0] = 0x39;//0011 1000 38
+  33   1        SMB0CN0_STA = 1;
+  34   1        T0_Waitms (100);
+  35   1      
+  36   1        SMB_DATA_OUT[0] = 0x14;//0011 1000 38
+  37   1        SMB0CN0_STA = 1;
+  38   1        T0_Waitms (100);
+  39   1      
+  40   1        SMB_DATA_OUT[0] = 0x53;//0011 1000 38
+  41   1        SMB0CN0_STA = 1;
+  42   1        T0_Waitms (100);
+  43   1      
+  44   1        SMB_DATA_OUT[0] = 0x73;//0011 1000 38
+  45   1        SMB0CN0_STA = 1;
+  46   1        T0_Waitms (100);
+  47   1      
+  48   1        SMB_DATA_OUT[0] = 0x6C;//0011 1000 38
+  49   1        SMB0CN0_STA = 1;
+  50   1        T0_Waitms (100);
+C51 COMPILER V9.60.0.0   EFM8SB1_SMBUS_MASTER_MULTIBYTE                                    09/22/2024 17:02:52 PAGE 2   
 
-  50   1              volatile uint8_t data_count;  // SMB_DATA_IN and SMB_DATA_OUT counter
-  51   1              uint8_t i;                    // Dummy variable counters
-  52   1              //Enter default mode
-  53   1              enter_DefaultMode_from_RESET();
-  54   1              DISP_EN = DISP_BC_DRIVEN;
-  55   1              while(!SDA)
-  56   1              {
-  57   2                XBR1 = 0x40;                     // Enable Crossbar
-  58   2                SCL = 0;                         // Drive the clock low
-  59   2                for(i = 0; i < 255; i++);        // Hold the clock low
-  60   2                SCL = 1;                         // Release the clock
-  61   2                while(!SCL);                     // Wait for open-drain
-  62   2                for(i = 0; i < 10; i++);         // Hold the clock high
-  63   2                XBR1 = 0x00;                     // Disable Crossbar
-  64   2              }
-  65   1              enter_Mode2_from_DefaultMode();
-  66   1              LED0 = LED_OFF;
-  67   1      
-  68   1              dat = 0;                            // Output data counter
-  69   1              NUM_ERRORS = 0;                     // Error counter
-  70   1              bbb = 0;
-  71   1      
-  72   1              SMB_DATA_OUT[0] = 0x38;//0011 1000 38
-  73   1                    SMB_DATA_OUT[1] = 0x39;//0011 1001 39
-  74   1                    SMB_DATA_OUT[2] = 0x14;//0001 0100 14
-  75   1                    SMB_DATA_OUT[3] = 0x73;//0111 0011 73
-  76   1                    SMB_DATA_OUT[4] = 0x56;//0101 0110 56
-  77   1                    SMB_DATA_OUT[5] = 0x6C;//0110 1100 6C
-  78   1                    SMB_DATA_OUT[6] = 0x38;//0011 1000 38
-  79   1                    SMB_DATA_OUT[7] = 0x01;//0000 0001 01
-  80   1                    SMB_DATA_OUT[8] = 0x0C;//0000 1100 0C
-  81   1              SMB_LCD_Init();
-  82   1              SMB_LCD_Data();
-  83   1              while(1)
-  84   1      //      while (1)
-  85   1      //        {
-  86   1      ////        SMB_DATA_OUT[0] = 0x38;//0011 1000 38
-  87   1      ////        SMB_DATA_OUT[1] = 0x39;//0011 1001 39
-  88   1      ////        SMB_DATA_OUT[2] = 0x14;//0001 0100 14
-  89   1      ////        SMB_DATA_OUT[3] = 0x73;//0111 0011 73
-  90   1      ////        SMB_DATA_OUT[4] = 0x56;//0101 0110 56
-  91   1      ////        SMB_DATA_OUT[5] = 0x6C;//0110 1100 6C
-  92   1      ////        SMB_DATA_OUT[6] = 0x38;//0011 1000 38
-  93   1      ////        SMB_DATA_OUT[7] = 0x01;//0000 0001 01
-  94   1      ////        SMB_DATA_OUT[8] = 0x0C;//0000 1100 0C
-  95   1      ////        TARGET = SLAVE_ADDR;             // Target the Slave for next SMBus
-  96   1      ////                         // transfer
-  97   1      //          SMB_Write();
-  98   1      //          T0_Waitms (50);                  // Wait 50 ms until the next cycle
-  99   1      //                           // so that LED blinks slow enough to see
- 100   1      //          bbb+=1;
- 101   1      //          if (bbb>=10){
- 102   1      //              bbb=1;
- 103   1      //          }
- 104   1      //        }                           // Start transfer
- 105   1              //SMB_Write();
- 106   1              T0_Waitms (50);                  // Wait 50 ms until the next cycle
- 107   1                                                                                 // so that LED blinks slow enough to see
- 108   1      }
-*** WARNING C280 IN LINE 50 OF C:\Users\Yoshida_Lab\SimplicityStudio\v5_workspace\EFM8SB1_SMBus_Master_Multibyte_2\src\E
-             -FM8SB1_SMBus_Master_Multibyte.c: 'data_count': unreferenced local variable
- 109          
- 110          void SMB_LCD_Init (void)
-C51 COMPILER V9.60.0.0   EFM8SB1_SMBUS_MASTER_MULTIBYTE                                    09/14/2024 21:53:43 PAGE 3   
-
- 111          {
- 112   1         //SMB_BUSY=1;
- 113   1         //while(1){
- 114   1      
- 115   1      //       data_count=0;
- 116   1      //       for(data_count=0;data_count<=9;data_count++){
- 117   1      //           T0_Waitms (100);
- 118   1      //           LCD_RS = 0;
- 119   1      //           SMB_DATA_OUT[0] = 0x38;//0011 1000 38
- 120   1      //           SMB_DATA_OUT[1] = 0x39;//0011 1001 39
- 121   1      //           SMB_DATA_OUT[2] = 0xFF;//0001 0100 14
- 122   1      //           SMB_DATA_OUT[3] = 0x73;//0111 0011 73
- 123   1      //           SMB_DATA_OUT[4] = 0x56;//0101 0110 56
- 124   1      //           SMB_DATA_OUT[5] = 0x6C;//0110 1100 6C
- 125   1      //           SMB_DATA_OUT[6] = 0x38;//0011 1000 38
- 126   1      //           SMB_DATA_OUT[7] = 0x01;//0000 0001 01
- 127   1      //           SMB_DATA_OUT[8] = 0x0C;//0000 1100 0C
- 128   1      //           SMB0CN0_STA = 1;
- 129   1      //           data_count+=1;
- 130   1      //       }
- 131   1         //}
- 132   1        LCD_RS = 0;
- 133   1        SMB_DATA_OUT[0] = 0x38;//0011 1000 38
- 134   1        SMB0CN0_STA = 1;
- 135   1        T0_Waitms (100);
- 136   1      
- 137   1        SMB_DATA_OUT[0] = 0x39;//0011 1000 38
- 138   1        SMB0CN0_STA = 1;
- 139   1        T0_Waitms (100);
- 140   1      
- 141   1        SMB_DATA_OUT[0] = 0x14;//0011 1000 38
- 142   1        SMB0CN0_STA = 1;
- 143   1        T0_Waitms (100);
- 144   1      
- 145   1        SMB_DATA_OUT[0] = 0x53;//0011 1000 38
- 146   1        SMB0CN0_STA = 1;
- 147   1        T0_Waitms (100);
- 148   1      
- 149   1        SMB_DATA_OUT[0] = 0x73;//0011 1000 38
- 150   1        SMB0CN0_STA = 1;
- 151   1        T0_Waitms (100);
- 152   1      
- 153   1        SMB_DATA_OUT[0] = 0x6C;//0011 1000 38
- 154   1        SMB0CN0_STA = 1;
- 155   1        T0_Waitms (100);
- 156   1      
- 157   1        SMB_DATA_OUT[0] = 0x38;//0011 1000 38
- 158   1        SMB0CN0_STA = 1;
- 159   1        T0_Waitms (100);
- 160   1      
- 161   1        SMB_DATA_OUT[0] = 0x0C;//0011 1000 38
- 162   1        SMB0CN0_STA = 1;
- 163   1        T0_Waitms (100);
- 164   1      
- 165   1        SMB_DATA_OUT[0] = 0x01;//0011 1000 38
- 166   1        SMB0CN0_STA = 1;
- 167   1        T0_Waitms (100);
- 168   1      
- 169   1      //  SMB_DATA_OUT[0] = 0x0F;// 0000 1100 0C
- 170   1      //  SMB0CN0_STA = 1;
- 171   1      //  T0_Waitms (100);
- 172   1      
- 173   1      }
-C51 COMPILER V9.60.0.0   EFM8SB1_SMBUS_MASTER_MULTIBYTE                                    09/14/2024 21:53:43 PAGE 4   
-
- 174          
- 175          void SMB_LCD_Data (void)
- 176          {
- 177   1      //  while(1){
- 178   1      //      for(data_count=0;data_count<=0;data_count++){
- 179   1      //                 T0_Waitms (100);
- 180   1      //                 LCD_RS = 1;
- 181   1      //                 SMB_DATA_OUT[0] = 0x30;
- 182   1      //                 SMB0CN0_STA = 1;
- 183   1      //                 data_count+=1;
- 184   1      //      }
- 185   1      //  }
- 186   1        LCD_RS = 0;
- 187   1        SMB_DATA_OUT[0] = 0x80;//C0
- 188   1        SMB0CN0_STA = 1;
- 189   1        T0_Waitms (100);
- 190   1      
- 191   1        //while(1){
- 192   1            LCD_RS = 1;
- 193   1            SMB_DATA_OUT[0] = 0x30;//0011 1000 38
- 194   1            SMB0CN0_STA = 1;
- 195   1            T0_Waitms (100);
- 196   1        //}
- 197   1            LCD_RS = 0;
- 198   1            SMB_DATA_OUT[0] = 0x0F;// 0000 1100 0C
- 199   1            SMB0CN0_STA = 1;
- 200   1            T0_Waitms (100);
- 201   1      }
- 202          
- 203          
- 204          //while (SMB_BUSY);                   // Wait for SMBus to be free.
- 205          //SMB_BUSY = 1;                       // Claim SMBus (set to busy)
- 206          //SMB0CN0_STA = 1;                            // Start transfer
- 207          
- 208          void SMB_Read (void)
- 209          {
- 210   1         while (SMB_BUSY);               // Wait for bus to be free.
- 211   1         SMB_BUSY = 1;                       // Claim SMBus (set to busy)
- 212   1         SMB_RW = 0;                         // Mark this transfer as a READ
- 213   1      
- 214   1         SMB0CN0_STA = 1;                            // Start transfer
- 215   1      
- 216   1         while (SMB_BUSY);               // Wait for transfer to complete
- 217   1      }
- 218          
- 219          //-----------------------------------------------------------------------------
- 220          // T0_Waitms
- 221          //-----------------------------------------------------------------------------
- 222          //
- 223          // Return Value : None
- 224          // Parameters   :
- 225          //   1) uint8_t ms - number of milliseconds to wait
- 226          //                        range is full range of character: 0 to 255
- 227          //
- 228          // Configure Timer0 to wait for <ms> milliseconds using SYSCLK as its time
- 229          // base.
- 230          //
- 231          //-----------------------------------------------------------------------------
- 232          void T0_Waitms (uint8_t ms)
- 233          {
- 234   1         TCON &= ~0x30;                      // Stop Timer0; Clear TCON_TF0
- 235   1         TMOD &= ~0x0f;                      // 16-bit free run mode
- 236   1         TMOD |=  0x01;
-C51 COMPILER V9.60.0.0   EFM8SB1_SMBUS_MASTER_MULTIBYTE                                    09/14/2024 21:53:43 PAGE 5   
-
- 237   1      
- 238   1         CKCON0 |= 0x04;                      // Timer0 counts SYSCLKs
- 239   1      
- 240   1         while (ms) {
- 241   2            TCON_TR0 = 0;                         // Stop Timer0
- 242   2            TH0 = ((-SYSCLK/1000) >> 8);     // Overflow in 1ms
- 243   2            TL0 = ((-SYSCLK/1000) & 0xFF);
- 244   2            TCON_TF0 = 0;                         // Clear overflow indicator
- 245   2            TCON_TR0 = 1;                         // Start Timer0
- 246   2            while (!TCON_TF0);                    // Wait for overflow
- 247   2            ms--;                            // Update ms counter
- 248   2         }
- 249   1      
- 250   1         TCON_TR0 = 0;                            // Stop Timer0
- 251   1      }
- 252          
- 253          //-----------------------------------------------------------------------------
- 254          // End Of File
- 255          //-----------------------------------------------------------------------------
+  51   1      
+  52   1        SMB_DATA_OUT[0] = 0x38;//0011 1000 38
+  53   1        SMB0CN0_STA = 1;
+  54   1        T0_Waitms (100);
+  55   1      
+  56   1        SMB_DATA_OUT[0] = 0x0C;//0011 1000 38
+  57   1        SMB0CN0_STA = 1;
+  58   1        T0_Waitms (100);
+  59   1      
+  60   1        SMB_DATA_OUT[0] = 0x01;//0011 1000 38
+  61   1        SMB0CN0_STA = 1;
+  62   1        T0_Waitms (100);
+  63   1      
+  64   1      }
+  65          
+  66          void SMB_LCD_Data (void)
+  67          {
+  68   1        LCD_RS = 0;
+  69   1        SMB_DATA_OUT[0] = 0x80;//C0
+  70   1        SMB0CN0_STA = 1;
+  71   1        T0_Waitms (100);
+  72   1      
+  73   1        LCD_RS = 1;
+  74   1        SMB_DATA_OUT[0] = 0x30;//0011 1000 38
+  75   1        SMB0CN0_STA = 1;
+  76   1        T0_Waitms (100);
+  77   1      
+  78   1        LCD_RS = 0;
+  79   1        SMB_DATA_OUT[0] = 0x0F;// 0000 1100 0C
+  80   1        SMB0CN0_STA = 1;
+  81   1        T0_Waitms (100);
+  82   1      }
+  83          
+  84          
+  85          void T0_Waitms (uint8_t ms)
+  86          {
+  87   1         TCON &= ~0x30;                      // Stop Timer0; Clear TCON_TF0
+  88   1         TMOD &= ~0x0f;                      // 16-bit free run mode
+  89   1         TMOD |=  0x01;
+  90   1      
+  91   1         CKCON0 |= 0x04;                      // Timer0 counts SYSCLKs
+  92   1      
+  93   1         while (ms) {
+  94   2            TCON_TR0 = 0;                         // Stop Timer0
+  95   2            TH0 = ((-SYSCLK/1000) >> 8);     // Overflow in 1ms
+  96   2            TL0 = ((-SYSCLK/1000) & 0xFF);
+  97   2            TCON_TF0 = 0;                         // Clear overflow indicator
+  98   2            TCON_TR0 = 1;                         // Start Timer0
+  99   2            while (!TCON_TF0);                    // Wait for overflow
+ 100   2            ms--;                            // Update ms counter
+ 101   2         }
+ 102   1      
+ 103   1         TCON_TR0 = 0;                            // Stop Timer0
+ 104   1      }
+ 105          
+ 106          //-----------------------------------------------------------------------------
+ 107          // End Of File
+ 108          //-----------------------------------------------------------------------------
 
 
 MODULE INFORMATION:   STATIC OVERLAYABLE
-   CODE SIZE        =    261    ----
+   CODE SIZE        =    153    ----
    CONSTANT SIZE    =   ----    ----
+C51 COMPILER V9.60.0.0   EFM8SB1_SMBUS_MASTER_MULTIBYTE                                    09/22/2024 17:02:52 PAGE 3   
+
    XDATA SIZE       =   ----    ----
    PDATA SIZE       =   ----    ----
-   DATA SIZE        =     31       2
+   DATA SIZE        =     22    ----
    IDATA SIZE       =   ----    ----
-   BIT SIZE         =      2    ----
+   BIT SIZE         =   ----    ----
    EDATA SIZE       =   ----    ----
    HDATA SIZE       =   ----    ----
    XDATA CONST SIZE =   ----    ----
@@ -296,4 +142,4 @@ MODULE INFORMATION:   STATIC OVERLAYABLE
 END OF MODULE INFORMATION.
 
 
-C51 COMPILATION COMPLETE.  1 WARNING(S),  0 ERROR(S)
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

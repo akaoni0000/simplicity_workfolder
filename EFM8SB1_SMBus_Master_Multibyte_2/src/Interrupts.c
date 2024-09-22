@@ -1,16 +1,12 @@
 #include <SI_EFM8SB1_Register_Enums.h>
 #include "EFM8SB1_SMBus_Master_Multibyte.h"
-int aaa=0;
-extern bbb;
-extern start_flag;
-extern data_count;
+
+
 extern LCD_RS;
 //-----------------------------------------------------------------------------
 SI_INTERRUPT(SMBUS0_ISR, SMBUS0_IRQn)
 {
-  bool FAIL = 0;
   static uint8_t sent_byte_counter;
-  static uint8_t rec_byte_counter;
 
   if (SMB0CN0_ARBLOST == 0)                   // Check for errors
   {
@@ -20,7 +16,7 @@ SI_INTERRUPT(SMBUS0_ISR, SMBUS0_IRQn)
      case SMB_MTSTA:
       SMB0DAT = 0x7C;
       SMB0CN0_STA = 0;                   // Manually clear START bit
-      rec_byte_counter = 0;      // Reset the counter
+
       sent_byte_counter = 0;     // Reset the counter
       break;
 
@@ -54,8 +50,4 @@ SI_INTERRUPT(SMBUS0_ISR, SMBUS0_IRQn)
 
   SMB0CN0_SI = 0;                             // Clear interrupt flag
 }
-
-
-
-
 

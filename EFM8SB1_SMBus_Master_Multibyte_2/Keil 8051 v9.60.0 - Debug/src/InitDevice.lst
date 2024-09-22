@@ -1,4 +1,4 @@
-C51 COMPILER V9.60.0.0   INITDEVICE                                                        09/14/2024 21:52:14 PAGE 1   
+C51 COMPILER V9.60.0.0   INITDEVICE                                                        09/20/2024 19:34:31 PAGE 1   
 
 
 C51 COMPILER V9.60.0.0, COMPILATION OF MODULE INITDEVICE
@@ -63,7 +63,7 @@ line level    source
   49   1              // ECF (PCA Counter/Timer Overflow Interrupt Enable) = OVF_INT_DISABLED
   50   1              //     (Disable the CF interrupt.)
   51   1              // WDTE (Watchdog Timer Enable) = DISABLED (Disable Watchdog Timer.)
-C51 COMPILER V9.60.0.0   INITDEVICE                                                        09/14/2024 21:52:14 PAGE 2   
+C51 COMPILER V9.60.0.0   INITDEVICE                                                        09/20/2024 19:34:31 PAGE 2   
 
   52   1              // WDLCK (Watchdog Timer Lock) = UNLOCKED (Watchdog Timer Enable
   53   1              //     unlocked.)
@@ -128,7 +128,7 @@ line level    source
  112          
  113          //================================================================================
  114          // CLOCK_0_enter_DefaultMode_from_RESET
-C51 COMPILER V9.60.0.0   INITDEVICE                                                        09/14/2024 21:52:14 PAGE 3   
+C51 COMPILER V9.60.0.0   INITDEVICE                                                        09/20/2024 19:34:31 PAGE 3   
 
  115          //================================================================================
  116          extern void CLOCK_0_enter_DefaultMode_from_RESET(void) {
@@ -193,7 +193,7 @@ line level    source
  175   1              // B6 (Port 1 Bit 6 Output Mode) = OPEN_DRAIN (P1.6 output is open-
  176   1              //     drain.)
  177   1              // B7 (Port 1 Bit 7 Output Mode) = OPEN_DRAIN (P1.7 output is open-
-C51 COMPILER V9.60.0.0   INITDEVICE                                                        09/14/2024 21:52:14 PAGE 4   
+C51 COMPILER V9.60.0.0   INITDEVICE                                                        09/20/2024 19:34:31 PAGE 4   
 
  178   1              //     drain.)
  179   1              */
@@ -224,7 +224,7 @@ line level    source
  204   1              // B7 (Port 1 Bit 7 Skip) = NOT_SKIPPED (P1.7 pin is not skipped by the
  205   1              //     crossbar.)
  206   1              */
- 207   1              P1SKIP = P1SKIP_B0__SKIPPED | P1SKIP_B1__SKIPPED | P1SKIP_B2__NOT_SKIPPED
+ 207   1              P1SKIP = P1SKIP_B0__SKIPPED | P1SKIP_B1__SKIPPED | P1SKIP_B2__SKIPPED
  208   1                       | P1SKIP_B3__NOT_SKIPPED | P1SKIP_B4__NOT_SKIPPED | P1SKIP_B5__NOT_SKIPPED
  209   1                       | P1SKIP_B6__NOT_SKIPPED | P1SKIP_B7__NOT_SKIPPED;
  210   1              // [P1SKIP - Port 1 Skip]$
@@ -258,7 +258,7 @@ line level    source
  238   1              // $[XBR0 - Port I/O Crossbar 0]
  239   1              /*
  240   1              // URT0E (UART I/O Output Enable) = DISABLED (UART I/O unavailable at
-C51 COMPILER V9.60.0.0   INITDEVICE                                                        09/14/2024 21:52:14 PAGE 5   
+C51 COMPILER V9.60.0.0   INITDEVICE                                                        09/20/2024 19:34:31 PAGE 5   
 
  241   1              //     Port pin.)
  242   1              // SPI0E (SPI I/O Enable) = DISABLED (SPI I/O unavailable at Port pins.)
@@ -323,7 +323,7 @@ line level    source
  301          
  302          //================================================================================
  303          // TIMER16_3_enter_Mode2_from_DefaultMode
-C51 COMPILER V9.60.0.0   INITDEVICE                                                        09/14/2024 21:52:14 PAGE 6   
+C51 COMPILER V9.60.0.0   INITDEVICE                                                        09/20/2024 19:34:31 PAGE 6   
 
  304          //================================================================================
  305          extern void TIMER16_3_enter_Mode2_from_DefaultMode(void) {
@@ -388,7 +388,7 @@ line level    source
  364   1              // [CKCON0 - Clock Control 0]$
  365   1      
  366   1              // $[TMOD - Timer 0/1 Mode]
-C51 COMPILER V9.60.0.0   INITDEVICE                                                        09/14/2024 21:52:14 PAGE 7   
+C51 COMPILER V9.60.0.0   INITDEVICE                                                        09/20/2024 19:34:31 PAGE 7   
 
  367   1              /*
  368   1              // T0M (Timer 0 Mode Select) = MODE0 (Mode 0, 13-bit Counter/Timer)
@@ -453,7 +453,7 @@ line level    source
  427          //================================================================================
  428          // INTERRUPT_0_enter_Mode2_from_DefaultMode
  429          //================================================================================
-C51 COMPILER V9.60.0.0   INITDEVICE                                                        09/14/2024 21:52:14 PAGE 8   
+C51 COMPILER V9.60.0.0   INITDEVICE                                                        09/20/2024 19:34:31 PAGE 8   
 
  430          extern void INTERRUPT_0_enter_Mode2_from_DefaultMode(void) {
  431   1              // $[EIE1 - Extended Interrupt Enable 1]
@@ -518,7 +518,7 @@ line level    source
  490          extern void PORTS_0_enter_Mode2_from_DefaultMode(void) {
  491   1              // $[P0 - Port 0 Pin Latch]
  492   1              // [P0 - Port 0 Pin Latch]$
-C51 COMPILER V9.60.0.0   INITDEVICE                                                        09/14/2024 21:52:14 PAGE 9   
+C51 COMPILER V9.60.0.0   INITDEVICE                                                        09/20/2024 19:34:31 PAGE 9   
 
  493   1      
  494   1              // $[P0MDOUT - Port 0 Output Mode]
